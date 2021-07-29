@@ -27,7 +27,7 @@ else
         <tbody>
             @foreach (var todo in todoItems)
             {
-                <Todo Item="todo" RefreshParent="RefreshList" />
+                <Todo Item="todo" RefreshParent="RefreshListAsync" />
             }
             <tr>
                 <td class="row justify-content-center">
@@ -61,7 +61,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        RefreshList();
+        await RefreshListAsync();
     }
 
     public void Sort(Expression<Func<TodoItem, object>> expression)
@@ -71,7 +71,7 @@ else
         StateHasChanged();
     }
 
-    private async Task RefreshList()
+    private async Task RefreshListAsync()
     {
         todoItems = await TodoService.GetTodoItemsAsync(ListFilter);
     }
