@@ -1,6 +1,6 @@
 ﻿@using NodaTime; 
 @namespace TodoApp.Components
-@inject TodoService TodoService
+@inject ITodoService TodoService
 @inject ZonedClock clock
 
 <tr class="@GetRowClass()">

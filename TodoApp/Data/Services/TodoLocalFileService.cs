@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NodaTime;
+using TodoApp.Data.Models;
 
-namespace TodoApp.Data
+namespace TodoApp.Data.Services
 {
-    public class TodoService
+    public class TodoLocalFileService : ITodoService
     {
         private readonly string _directoryPath;
         private readonly string _filePath;
         private readonly ZonedClock _clock;
 
-        public TodoService(ZonedClock clock)
+        public TodoLocalFileService(ZonedClock clock)
         {
             _directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create)
                 + "BlazorTest";
@@ -54,13 +54,13 @@ namespace TodoApp.Data
         {
             var items = await GetTodoItemsAsync();
             var existingItem = items.FirstOrDefault(t => newItem.Id == t.Id);
-            if(existingItem != null)
+            if (existingItem != null)
             {
                 items.Remove(existingItem);
             }
             else
             {
-                newItem.Id = items.Any() 
+                newItem.Id = items.Any()
                     ? items.Max(t => t.Id) + 1
                     : 1;
                 newItem.Created = _clock.GetCurrentZonedDateTime();

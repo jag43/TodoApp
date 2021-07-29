@@ -3,7 +3,7 @@ using System.ComponentModel;
 using TodoApp.Data.Sorting;
 using NodaTime;
 
-namespace TodoApp.Data
+namespace TodoApp.Data.Models
 {
     public class TodoItem
     {

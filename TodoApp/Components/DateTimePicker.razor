@@ -1,7 +1,6 @@
 ﻿@using NodaTime;
 
 @inject IDateTimeZoneProvider dateTimeZoneProvider
-@inject CalendarSystem calendarSystem
 <div class="input-group mb-3">
     <DatePicker DateValue="localDate" DateValueChanged="DateValueChanged" />
     <TimePicker TimeValue="localTime" TimeValueChanged="TimeValueChanged" />
