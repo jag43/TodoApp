@@ -1,0 +1,88 @@
+﻿@using NodaTime; 
+@namespace TodoApp.Components
+@inject TodoService TodoService
+@inject ZonedClock clock
+
+<tr class="@GetRowClass()">
+    <td><DateTimeDisplay DateValue="Item.Created" /></td>
+    <td @onclick="@ShowEditTodo">
+        <a href="" @onclick:preventDefault>@Item.Title</a>
+    </td>
+    <td>
+        <DateTimeDisplay DateValue="Item.Due" />
+    </td>
+    <td>
+        <input type="checkbox" checked="@Item.Done" @onchange="OnDoneChanged" class="form-check" />
+    </td>
+    <td>
+        <button @onclick="DeleteClick" class="btn btn-danger btn-sm">Delete</button>
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public TodoItem Item { get; set; }
+
+    [Parameter]
+    public EventCallback RefreshParent { get; set; }
+
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
+
+    public string GetRowClass()
+    {
+        if (Item.Done)
+        {
+            return "table-success";
+        }
+
+        if (Item.Due.HasValue)
+        {
+            var now = clock.GetCurrentZonedDateTime();
+            var duration = (Item.Due.Value - now);
+            if(duration < Duration.Zero)
+            {
+                return "table-danger";
+            }
+            else if(duration < Duration.FromDays(1))
+            {
+                return "table-warning";
+            }
+            else if(duration < Duration.FromDays(7))
+            {
+                return "table-primary";
+            }
+        }
+        return "";
+    }
+
+
+    public async Task OnDoneChanged(ChangeEventArgs e)
+    {
+        Item.Done = (bool)e.Value;
+        await TodoService.AddOrUpdateTodoItemAsync(Item);
+    }
+
+    public async Task DeleteClick(MouseEventArgs e)
+    {
+        await TodoService.DeleteTodoItemAsync(Item.Id);
+        await RefreshParent.InvokeAsync();
+    }
+
+    private async Task ShowEditTodo()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("Item", Item);
+
+        var options = new ModalOptions
+        {
+            Class = "blazored-modal modal-lg"
+        };
+
+        var modal = Modal.Show<TodoModal>("Todo Item Details", parameters, options);
+
+        var result = await modal.Result;
+
+        await TodoService.AddOrUpdateTodoItemAsync(Item);
+    }
+}

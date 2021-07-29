@@ -1,0 +1,32 @@
+﻿@namespace TodoApp.Components
+@using System.ComponentModel;
+@using System.Linq.Expressions;
+@using TodoApp.Data;
+@using TodoApp.Data.Sorting;
+
+@if (String.IsNullOrWhiteSpace(Column.GetPropertyName()))
+{
+    <th></th>
+}
+else
+{
+    <th @onclick="_ => Sort(Column)">
+        @if (CurrentSort.Column.GetPropertyName() == Column.GetPropertyName())
+        {
+            string iconName = CurrentSort.Direction == ListSortDirection.Ascending ? "sort-ascending" : "sort-descending";
+            <span class="oi oi-@iconName" title="icon name" aria-hidden="true"></span>
+        }
+        @Column.GetPropertyName()
+    </th>
+}
+
+@code {
+    [Parameter]
+    public Expression<Func<TodoItem, object>> Column { get; set; }
+
+    [Parameter]
+    public Action<Expression<Func<TodoItem, object>>> Sort { get; set; }
+
+    [Parameter]
+    public SortOrder<TodoItem> CurrentSort { get; set; }
+}

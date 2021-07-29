@@ -1,0 +1,12 @@
+﻿@(DateValue?.LocalDateTime.ToString(Format, FormatProvider) ?? "-")
+
+@code {
+    [Parameter]
+    public NodaTime.ZonedDateTime? DateValue { get; set; }
+
+    [Parameter]
+    public string Format { get; set; }
+
+    [Parameter]
+    public IFormatProvider FormatProvider { get; set; }
+}

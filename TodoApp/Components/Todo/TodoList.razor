@@ -1,0 +1,97 @@
+﻿@namespace TodoApp.Components
+
+@using TodoApp.Data
+@using TodoApp.Data.Sorting
+@using System.ComponentModel
+@using System.Linq.Expressions
+
+@inject TodoService TodoService
+
+@if (todoItems == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    // Done list
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <TodoHeader Column="todo => todo.Created" Sort="Sort" CurrentSort="CurrentSort" />
+                <TodoHeader Column="todo => todo.Title" Sort="Sort" CurrentSort="CurrentSort" />
+                <TodoHeader Column="todo => todo.Due" Sort="Sort" CurrentSort="CurrentSort" />
+                <TodoHeader Column="todo => todo.Done" Sort="Sort" CurrentSort="CurrentSort" />
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var todo in todoItems)
+            {
+                <Todo Item="todo" RefreshParent="RefreshList" />
+            }
+            <tr>
+                <td class="row justify-content-center">
+                    <label class="btn btn-outline-primary" for="new-todo-item">
+                        <span class="oi oi-plus"></span>
+                    </label>
+                </td>
+                <td>
+                    <input id="new-todo-item" type="text" class="form-control"
+                           placeholder="New to-do item"
+                           @bind="newTodoTitle"
+                           @onfocusout="OnNewItem"
+                           @onkeyup="OnKeyUp" />
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public Expression<Func<TodoItem, bool>> ListFilter { get; set; }
+
+    private SortOrder<TodoItem> CurrentSort = new SortOrder<TodoItem> { Column = todo => todo.Id, Direction = ListSortDirection.Ascending };
+
+    private List<TodoItem> todoItems;
+
+    private string newTodoTitle = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        RefreshList();
+    }
+
+    public void Sort(Expression<Func<TodoItem, object>> expression)
+    {
+        CurrentSort = CurrentSort.GetNewSortOrder(expression);
+        todoItems.Sort(CurrentSort.CreateComparer());
+        StateHasChanged();
+    }
+
+    private async Task RefreshList()
+    {
+        todoItems = await TodoService.GetTodoItemsAsync(ListFilter);
+    }
+
+    private async Task OnNewItem()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodoTitle))
+        {
+            var newItem = new TodoItem() { Title = newTodoTitle };
+            todoItems.Add(newItem);
+            await TodoService.AddOrUpdateTodoItemAsync(newItem);
+            newTodoTitle = "";
+        }
+    }
+
+    private async Task OnKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await OnNewItem();
+        }
+    }
+}

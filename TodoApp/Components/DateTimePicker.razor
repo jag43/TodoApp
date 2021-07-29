@@ -1,0 +1,71 @@
+﻿@using NodaTime;
+
+@inject IDateTimeZoneProvider dateTimeZoneProvider
+@inject CalendarSystem calendarSystem
+<div class="input-group mb-3">
+    <DatePicker DateValue="localDate" DateValueChanged="DateValueChanged" />
+    <TimePicker TimeValue="localTime" TimeValueChanged="TimeValueChanged" />
+</div>
+
+
+@code {
+    LocalDate? localDate;
+
+    LocalTime? localTime;
+
+    [Parameter]
+    public ZonedDateTime? DateTimeValue
+    {
+        get
+        {
+            if (!localDate.HasValue)
+            {
+                localTime = LocalTime.Midnight;
+                return null;
+            }
+            if (!localTime.HasValue)
+            {
+                localTime = LocalTime.Midnight;
+            }
+
+            LocalDateTime localDateTime = localDate.Value.At(localTime.Value);
+
+            var timeZone = dateTimeZoneProvider.GetSystemDefault();
+
+            return timeZone.AtLeniently(localDateTime);
+        }
+        set
+        {
+            if (!value.HasValue)
+            {
+                localDate = null;
+                localTime = null;
+            }
+            else
+            {
+                localDate = value.Value.LocalDateTime.Date;
+                localTime = value.Value.LocalDateTime.TimeOfDay;
+            }
+        }
+    }
+
+    [Parameter]
+    public EventCallback<ZonedDateTime?> DateTimeValueChanged { get; set; }
+
+    public async Task DateValueChanged(LocalDate? d)
+    {
+        localDate = d;
+        await OnValueChange();
+    }
+
+    public async Task TimeValueChanged(LocalTime? t)
+    {
+        localTime= t;
+        await OnValueChange();
+    }
+
+    private async Task OnValueChange()
+    {
+        await DateTimeValueChanged.InvokeAsync(DateTimeValue);
+    }
+}

@@ -1,0 +1,35 @@
+﻿@using NodaTime;
+
+<input type="date" class="form-control"
+    value="@DateString"
+    @onchange="OnChange" />
+
+@code {
+    private readonly string DateFormat = "yyyy-MM-dd";
+
+    [Parameter]
+    public LocalDate? DateValue { get; set; }
+
+    [Parameter]
+    public EventCallback<LocalDate?> DateValueChanged { get; set; }
+
+    private string DateString => DateValue.HasValue
+        ? DateValue.Value.ToString(DateFormat, System.Globalization.CultureInfo.InvariantCulture)
+        : "";
+
+    private async Task OnChange(ChangeEventArgs e)
+    {
+        string d = e?.Value as string;
+
+        if (string.IsNullOrWhiteSpace(d))
+        {
+            DateValue = null;
+        }
+        else
+        {
+            DateValue = LocalDate.FromDateTime(DateTime.ParseExact(d, DateFormat, null));
+        }
+
+        await DateValueChanged.InvokeAsync(DateValue);
+    }
+}

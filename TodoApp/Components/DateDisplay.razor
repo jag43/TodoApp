@@ -1,0 +1,14 @@
+﻿@using NodaTime;
+
+@(DateValue?.ToString(Format, FormatProvider) ?? "-")
+
+@code {
+    [Parameter]
+    public LocalDate? DateValue { get; set; }
+
+    [Parameter]
+    public string Format { get; set; }
+
+    [Parameter]
+    public IFormatProvider FormatProvider { get; set; }
+}
