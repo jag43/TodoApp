@@ -32,7 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             else
             {
-                services.AddScoped<ITodoService, TodoBlobStorageService>();
+                //services.AddScoped<ITodoService, TodoBlobStorageService>();
             }
 
             return services;

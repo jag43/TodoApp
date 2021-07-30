@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TodoApp.DbUp": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
