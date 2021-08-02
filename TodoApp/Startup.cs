@@ -23,7 +23,7 @@ namespace TodoApp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTodoServices(Environment);
+            services.AddTodoServices(Environment, Configuration);
             services.AddTodoConfig(Configuration);
         }
 

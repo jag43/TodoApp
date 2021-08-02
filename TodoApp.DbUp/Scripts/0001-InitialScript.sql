@@ -1,4 +1,4 @@
-﻿CREATE TABLE TodoItem(
+﻿CREATE TABLE TodoItem (
     Id INT NOT NULL IDENTITY (1, 1),
     UserId NVARCHAR (1024) NOT NULL,
     Created_UnixTicks BIGINT NOT NULL,

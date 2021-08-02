@@ -1,6 +1,8 @@
 ﻿@using NodaTime;
 @namespace TodoApp.Components
 
+@inject IDateTimeZoneProvider tzProvider;
+
 <div class="container">
     <div class="form-group">
         <input class="form-control" type="text" @bind="@Item.Title" />
@@ -12,10 +14,10 @@
         </label>
     </div> 
     <div class="form-group">
-        Due <DateTimePicker @bind-DateTimeValue="@(Item.Due)" @bind-DateTimeValue:event="DateTimeValueChanged" />
+        Due <DateTimePicker @bind-DateTimeValue="@Due" @bind-DateTimeValue:event="DateTimeValueChanged" />
     </div>
     <div class="form-group">
-        Created on <DateTimeDisplay DateValue="Item.Created" />
+        Created on <DateTimeDisplay DateValue="Item.GetCreated(tzProvider)" />
     </div>
     <div claass="form-group">
         <textarea @bind="@Item.Notes" rows="5"></textarea>
@@ -26,6 +28,12 @@
 @code {
     [Parameter]
     public TodoItem Item { get; set; }
+
+    public ZonedDateTime? Due 
+    { 
+        get => Item.GetDue(tzProvider);
+        set => Item.SetDue(value);
+    }
 
     private readonly string _checkboxId = Guid.NewGuid().ToString();
 }
