@@ -4,29 +4,32 @@
 @using TodoApp.Data;
 @using TodoApp.Data.Sorting;
 
-@if (String.IsNullOrWhiteSpace(Column.GetPropertyName()))
+@if (String.IsNullOrWhiteSpace(Column.ColumnHeading))
 {
     <th></th>
 }
 else
 {
-    <th @onclick="_ => Sort(Column)">
-        @if (CurrentSort.Column.GetPropertyName() == Column.GetPropertyName())
+    <th @onclick="@(async _ => await SortAsync(Column))">
+        @if (CurrentSort.Column == Column)
         {
             string iconName = CurrentSort.Direction == ListSortDirection.Ascending ? "sort-ascending" : "sort-descending";
             <span class="oi oi-@iconName" title="icon name" aria-hidden="true"></span>
         }
-        @Column.GetPropertyName()
+        @(ColumnHeader ?? Column.ColumnHeading)
     </th>
 }
 
 @code {
     [Parameter]
-    public Expression<Func<TodoItem, object>> Column { get; set; }
+    public string ColumnHeader { get; set; }
 
     [Parameter]
-    public Action<Expression<Func<TodoItem, object>>> Sort { get; set; }
+    public TodoItemSortOrder Column { get; set; }
 
     [Parameter]
-    public SortOrder<TodoItem> CurrentSort { get; set; }
+    public Func<TodoItemSortOrder, Task> SortAsync { get; set; }
+
+    [Parameter]
+    public (TodoItemSortOrder Column, ListSortDirection Direction) CurrentSort { get; set; }
 }

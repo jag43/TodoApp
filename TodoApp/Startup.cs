@@ -1,49 +1,30 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Blazored.Modal;
 using TodoApp.Data;
-using NodaTime.Extensions;
 using NodaTime;
+using TodoApp.Data.Services;
 
 namespace TodoApp
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
-
-            services.AddBlazoredModal();
-
-            services.AddSingleton<WeatherForecastService>();
-            services.AddSingleton<TodoService>();
-            services.AddSingleton(CalendarSystem.Iso);
-
-            services.AddTransient(_ => DateTimeZoneProviders.Tzdb);
-
-            services.AddTransient(svc => new ZonedClock(
-                SystemClock.Instance, 
-                svc.GetRequiredService<IDateTimeZoneProvider>().GetSystemDefault(), 
-                svc.GetRequiredService<CalendarSystem>()));
+            services.AddTodoServices(Environment, Configuration);
+            services.AddTodoConfig(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
