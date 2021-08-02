@@ -10,7 +10,7 @@
 }
 else
 {
-    <th @onclick="@(async _ => await SortAsync(Column))">
+    <th @onclick="@(async _ => await SortAsync(Column))" class="todo-sortable">
         @if (CurrentSort.Column == Column)
         {
             string iconName = CurrentSort.Direction == ListSortDirection.Ascending ? "sort-ascending" : "sort-descending";

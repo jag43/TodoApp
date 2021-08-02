@@ -13,15 +13,23 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddTodoServices(this IServiceCollection services, IWebHostEnvironment environment, IConfiguration configuration)
         {
+
+            services.AddHttpContextAccessor();
+
+            services.AddControllers();
+
             services.AddRazorPages();
+
             services.AddServerSideBlazor();
             services.AddBlazoredModal();
 
-            services.AddTodoContext(environment, configuration);
-
+            services.AddApplicationInsightsTelemetry();
             services.AddNodaTime();
 
+            services.AddTodoContext(environment, configuration);
+
             services.AddScoped<ITodoService, TodoService>();
+            services.AddScoped<UserService>();
 
             return services;
         }
