@@ -5,6 +5,16 @@ VisualStudioVersion = 16.6.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoApp", "TodoApp\TodoApp.csproj", "{03F8F91F-E564-4DAA-8121-2A57035F4F8A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9E0948AF-EF13-4FC7-8D8D-D7BD7356F885}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{283E77C3-A34D-44F9-80D9-CB7EB2F4FD7E}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApp.DbUp", "TodoApp.DbUp\TodoApp.DbUp.csproj", "{1ED90052-EF8D-4180-9174-F1C6F064958C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApp.Database", "TodoApp.Database\TodoApp.Database.csproj", "{766AA786-8963-4CC6-BB90-AF88212F1362}"
@@ -58,6 +68,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{283E77C3-A34D-44F9-80D9-CB7EB2F4FD7E} = {9E0948AF-EF13-4FC7-8D8D-D7BD7356F885}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {99B71E33-413E-44FA-959F-4A4556AAFB4F}
