@@ -7,7 +7,7 @@
 
 @inject ITodoService TodoService
 
-@if (todoItems == null)
+@if (_todoItems == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -17,15 +17,15 @@ else
     <table class="table table-sm">
         <thead>
             <tr>
-                <TodoHeader ColumnHeader="Created" Column="TodoItemSortOrder.Created" SortAsync="SortAsync" CurrentSort="CurrentSort" />
-                <TodoHeader Column="TodoItemSortOrder.Title" SortAsync="SortAsync" CurrentSort="CurrentSort" />
-                <TodoHeader ColumnHeader="Due" Column="TodoItemSortOrder.Due" SortAsync="SortAsync" CurrentSort="CurrentSort" />
-                <TodoHeader Column="TodoItemSortOrder.Done" SortAsync="SortAsync" CurrentSort="CurrentSort" />
+                <TodoHeader ColumnHeader="Created" Column="TodoItemSortOrder.Created" SortAsync="SortAsync" CurrentSort="_currentSort" />
+                <TodoHeader Column="TodoItemSortOrder.Title" SortAsync="SortAsync" CurrentSort="_currentSort" />
+                <TodoHeader ColumnHeader="Due" Column="TodoItemSortOrder.Due" SortAsync="SortAsync" CurrentSort="_currentSort" />
+                <TodoHeader Column="TodoItemSortOrder.Done" SortAsync="SortAsync" CurrentSort="_currentSort" />
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var todo in todoItems)
+            @foreach (var todo in _todoItems)
             {
                 <Todo Item="todo" RefreshParent="RefreshListAsync" />
             }
@@ -53,9 +53,9 @@ else
     [Parameter]
     public Expression<Func<TodoItem, bool>> ListFilter { get; set; }
 
-    private (TodoItemSortOrder Column, ListSortDirection Direction) CurrentSort = (TodoItemSortOrder.Id, ListSortDirection.Ascending);
+    private (TodoItemSortOrder Column, ListSortDirection Direction) _currentSort = (TodoItemSortOrder.Id, ListSortDirection.Ascending);
 
-    private List<TodoItem> todoItems;
+    private List<TodoItem> _todoItems;
 
     private string newTodoTitle = "";
 
@@ -66,13 +66,13 @@ else
 
     public async Task SortAsync(TodoItemSortOrder column)
     {
-        CurrentSort = CurrentSort.GetNewSortOrder(column);
+        _currentSort = _currentSort.GetNewSortOrder(column);
         await RefreshListAsync();
     }
 
     private async Task RefreshListAsync()
     {
-        todoItems = await TodoService.GetTodoItemsAsync(ListFilter, CurrentSort);
+        _todoItems = await TodoService.GetTodoItemsAsync(ListFilter, _currentSort);
         StateHasChanged();
     }
 
@@ -85,7 +85,7 @@ else
                 Title = newTodoTitle
             };
 
-            todoItems.Add(newItem);
+            _todoItems.Add(newItem);
             await TodoService.AddTodoItemAsync(newItem);
             newTodoTitle = "";
         }
