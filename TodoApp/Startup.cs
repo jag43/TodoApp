@@ -7,10 +7,6 @@ using Blazored.Modal;
 using TodoApp.Data;
 using NodaTime;
 using TodoApp.Data.Services;
-using Microsoft.AspNetCore.Identity;
-using TodoApp.Database.Data;
-using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace TodoApp
 {
@@ -27,18 +23,6 @@ namespace TodoApp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = MicrosoftAccountDefaults.AuthenticationScheme;
-            })
-                .AddCookie()
-                .AddMicrosoftAccount(o =>
-                {
-                    o.ClientId = Configuration["Authentication:ClientId"];
-                    o.ClientSecret = Configuration["Authentication:ClientSecret"];
-                });
-
             services.AddTodoServices(Environment, Configuration);
             services.AddTodoConfig(Configuration);
         }
@@ -62,14 +46,10 @@ namespace TodoApp
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
                 endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage("/_Host");
             });
         }
     }
