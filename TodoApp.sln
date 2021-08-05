@@ -13,8 +13,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{283E77C3-A34D-44F9-80D9-CB7EB2F4FD7E}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
-		.github\workflows\main_jag-todo_dbup.yml = .github\workflows\main_jag-todo_dbup.yml
-		.github\workflows\main_jag-todo_webapp.yml = .github\workflows\main_jag-todo_webapp.yml
+		.github\workflows\main_jag-todo.yml = .github\workflows\main_jag-todo.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoApp.DbUp", "TodoApp.DbUp\TodoApp.DbUp.csproj", "{1ED90052-EF8D-4180-9174-F1C6F064958C}"

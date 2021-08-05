@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TodoApp.Database\TodoApp.Database.csproj" />
+    <ProjectReference Include="..\TodoApp.DbUp\TodoApp.DbUp.csproj" />
   </ItemGroup>
 
 </Project>

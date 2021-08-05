@@ -3,44 +3,36 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using DbUp;
+using DbUp.Engine;
 using Microsoft.Extensions.Configuration;
 
 namespace TodoApp.DbUp
 {
-    class Program
+    public class Program
     {
-        private static int Main(string[] args)
+        public static int Main(string[] args)
         {
             var environmentName = Environment.GetEnvironmentVariable("ENVIRONMENT")
                 ?? "Production";
 
+            DatabaseUpgradeResult result;
+
             if (args.Length > 0)
             {
-                return UpgradeDatabase(args[0]);
+                result = UpgradeDatabase(args[0]);
             }
             else
             {
                 string basePath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
                 var configuration = new ConfigurationBuilder()
                 .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{environmentName}.json", optional: true)
                 .Build();
 
-                return UpgradeDatabase(configuration.GetConnectionString("Todo"));
+                result = UpgradeDatabase(configuration.GetConnectionString("Todo"));
             }
-        }
-
-        private static int UpgradeDatabase(string connectionString)
-        {
-            var upgrader =
-                DeployChanges.To
-                    .SqlDatabase(connectionString)
-                    .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
-                    .LogToConsole()
-                    .Build();
-
-            var result = upgrader.PerformUpgrade();
 
             if (!result.Successful)
             {
@@ -57,6 +49,18 @@ namespace TodoApp.DbUp
             Console.WriteLine("Success!");
             Console.ResetColor();
             return 0;
+        }
+
+        public static DatabaseUpgradeResult UpgradeDatabase(string connectionString)
+        {
+            var upgrader =
+                DeployChanges.To
+                    .SqlDatabase(connectionString)
+                    .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
+                    .LogToConsole()
+                    .Build();
+
+            return upgrader.PerformUpgrade();
         }
     }
 }

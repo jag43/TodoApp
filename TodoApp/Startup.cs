@@ -7,8 +7,6 @@ using Blazored.Modal;
 using TodoApp.Data;
 using NodaTime;
 using TodoApp.Data.Services;
-using Microsoft.AspNetCore.Identity;
-using TodoApp.Database.Data;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -32,12 +30,12 @@ namespace TodoApp
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = MicrosoftAccountDefaults.AuthenticationScheme;
             })
-                .AddCookie()
-                .AddMicrosoftAccount(o =>
-                {
-                    o.ClientId = Configuration["Authentication:ClientId"];
-                    o.ClientSecret = Configuration["Authentication:ClientSecret"];
-                });
+               .AddCookie()
+               .AddMicrosoftAccount(o =>
+               {
+                   o.ClientId = Configuration["Authentication:ClientId"];
+                   o.ClientSecret = Configuration["Authentication:ClientSecret"];
+               });
 
             services.AddTodoServices(Environment, Configuration);
             services.AddTodoConfig(Configuration);
