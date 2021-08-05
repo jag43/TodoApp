@@ -20,10 +20,11 @@ namespace TodoApp.DbUp
             }
             else
             {
+                string basePath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
                 var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{environmentName}.json")
+                .AddJsonFile($"appsettings.{environmentName}.json", optional: true)
                 .Build();
 
                 return UpgradeDatabase(configuration.GetConnectionString("Todo"));
