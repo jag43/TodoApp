@@ -26,10 +26,10 @@ namespace TodoApp.DbUp
                 string basePath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
                 var configuration = new ConfigurationBuilder()
-                .SetBasePath(basePath)
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{environmentName}.json", optional: true)
-                .Build();
+                    .SetBasePath(basePath)
+                    .AddJsonFile("appsettings.json")
+                    .AddJsonFile($"appsettings.{environmentName}.json", optional: true)
+                    .Build();
 
                 result = UpgradeDatabase(configuration.GetConnectionString("Todo"));
             }
@@ -53,6 +53,8 @@ namespace TodoApp.DbUp
 
         public static DatabaseUpgradeResult UpgradeDatabase(string connectionString)
         {
+            EnsureDatabase.For.SqlDatabase(connectionString);
+
             var upgrader =
                 DeployChanges.To
                     .SqlDatabase(connectionString)
