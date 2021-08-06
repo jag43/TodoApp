@@ -34,7 +34,7 @@ namespace TodoApp.Data.Services
             Expression<Func<TodoItem, bool>> listFilter = null, 
             (TodoItemSortOrder column, ListSortDirection direction)? sortOrder = null)
         {
-            string userId = _userService.GetUserId();
+            string userId = await _userService.GetUserIdAsync();
             IQueryable<TodoItem> query = _todoContext.TodoItems.Where(todoItem => todoItem.UserId == userId);
             if(listFilter != null) query = query.Where(listFilter);
             if (sortOrder != null) query = query.OrderBy(sortOrder.Value.column, sortOrder.Value.direction);
@@ -45,7 +45,7 @@ namespace TodoApp.Data.Services
         public async Task DeleteTodoItemAsync(int id)
         {
             var todoItem = await _todoContext.TodoItems.SingleOrDefaultAsync(i => i.Id == id);
-            GuardAgainstWrongUser(todoItem);
+            GuardAgainstWrongUser(todoItem, await _userService.GetUserIdAsync());
 
             if (todoItem != null)
             {
@@ -57,21 +57,20 @@ namespace TodoApp.Data.Services
         public async Task AddTodoItemAsync(TodoItem newItem)
         {
             newItem.SetCreated(_clock.GetCurrentZonedDateTime());
-            newItem.UserId = _userService.GetUserId();
+            newItem.UserId = await _userService.GetUserIdAsync();
             _todoContext.TodoItems.Add(newItem);
             await _todoContext.SaveChangesAsync();
         }
 
         public async Task UpdateTodoItemAsync(TodoItem todoItem)
         {
-            GuardAgainstWrongUser(todoItem);
+            GuardAgainstWrongUser(todoItem, await _userService.GetUserIdAsync());
             _todoContext.TodoItems.Update(todoItem);
             await _todoContext.SaveChangesAsync();
         }
 
-        private void GuardAgainstWrongUser(TodoItem todoItem)
+        private void GuardAgainstWrongUser(TodoItem todoItem, string userId)
         {
-            string userId = _userService.GetUserId();
             if (todoItem != null && todoItem.UserId != userId)
             {
                 _logger.LogError("User {userId} is trying to access todo item {todoItemId} which it does not own.", userId, todoItem.Id);

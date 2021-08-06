@@ -13,7 +13,6 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddTodoServices(this IServiceCollection services, IWebHostEnvironment environment, IConfiguration configuration)
         {
-
             services.AddHttpContextAccessor();
 
             services.AddControllers();
